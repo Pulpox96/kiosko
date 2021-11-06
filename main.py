@@ -18,6 +18,11 @@ productos = {
     }
 }
 
+#Crear archivo con los productos
+
+
+#Actualizar archivo de los productos
+
 # Global functions 
 def precio(dicc, tipo, nombre):
 
