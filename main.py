@@ -24,10 +24,20 @@ productos = {
 #Actualizar archivo de los productos
 
 # Global functions 
-def precio(dicc, tipo, nombre):
+def precio(dicc, nombre):
+
+#Falta agregar que pasa si el producto no esta en el dicc
+# o tal vez de eso se encarga otra funcion, lo que haria (creo) 
+# que todo lo de abajo no sea necesario
 
     try:
-        return dicc[tipo][nombre][1]
+        #Checkeo si existe ese producto dentro de Comestibles
+        if nombre in dicc["comestibles"]:
+            return dicc["comestibles"][nombre][1]
+
+        #Checkeo si existe ese producto dentro de No Comestibles
+        elif nombre in dicc["noComestibles"]:
+            return dicc["noComestibles"][nombre][1]
     except:
         return "Algo salio mal, pruebe devuelta"
 
@@ -41,6 +51,18 @@ def mostrarProductos(dicc):
 
             print(f"{producto}, precio: ${producto[1]}; hay en total: ${producto[2]}")
 
-mostrarProductos(productos)
+#mostrarProductos(productos)
 
 # Usuario functions
+
+def comprar(dicc):
+
+    total = 0
+
+    usuarioInput = input("Que queres comprar: ")
+
+    total = precio(dicc, usuarioInput)
+
+    print(f"Tu total es {total}")
+
+comprar(productos) 
