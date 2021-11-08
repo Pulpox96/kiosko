@@ -23,7 +23,7 @@ productos = {
 
 #Actualizar archivo de los productos
 
-# Global functions 
+# ---------------------------- Global functions ----------------------------------------
 def precio(dicc, nombre):
 
 #Falta agregar que pasa si el producto no esta en el dicc
@@ -43,26 +43,59 @@ def precio(dicc, nombre):
 
 def mostrarProductos(dicc):
 
-#probar haciendo una lista de las 2 keys, y despues con un for con la cantidad de items que tiene esa lista
 
     for tipo in dicc:
 
-        for producto in tipo.keys():
+        for producto in dicc[tipo]:
 
-            print(f"{producto}, precio: ${producto[1]}; hay en total: ${producto[2]}")
+            print(f"{producto} - ${dicc[tipo][producto][1]}; hay en total: {dicc[tipo][producto][2]} en stock")
+            print("------------")
 
-#mostrarProductos(productos)
 
-# Usuario functions
 
+# ---------------------------- User functions ----------------------------------------
+
+
+# Pregunta al usuario si sabe lo que quiere comprar. En caso de que no sepa, muestra la lista de productos
+# en caso de que sepa lo que quiere, se le pregunta el nombre del producto y se agrega al "carrito"
 def comprar(dicc):
-
+    
+    #terminar variable para que siga el programa hasta que el usuario haga el "checkout"
+    terminar = False
     total = 0
 
-    usuarioInput = input("Que queres comprar: ")
+    while terminar == False:
+        
 
-    total = precio(dicc, usuarioInput)
+        usuarioInput = input("Sabe lo que quiere comprar: (si/no)").lower()
+
+        #Fijar que haya escrito si o no
+        if usuarioInput != "no" or usuarioInput != "si":
+            continue
+
+        #No sabe lo que quiere comprar
+        elif usuarioInput == "no":
+            mostrarProductos(dicc)
+            continue
+
+        #Si sabe lo que quiere comprar    
+        else:
+            productoComprar = input("Ingrese el nombre del producto: ").lower()
+
+            total = precio(dicc, productoComprar) 
+
+        continuarInput = input("Desea seguir comprando?: (si/no)").lower()
+
+        if continuarInput == "si":
+            continue
+        else:
+            terminar == True
+            continue
+
+    
 
     print(f"Tu total es {total}")
+    print("Gracias por comprar!")
 
-comprar(productos) 
+
+comprar(productos)
