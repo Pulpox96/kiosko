@@ -26,9 +26,9 @@ productos = {
 # ---------------------------- Global functions ----------------------------------------
 def precio(dicc, nombre):
 
-#Falta agregar que pasa si el producto no esta en el dicc
-# o tal vez de eso se encarga otra funcion, lo que haria (creo) 
-# que todo lo de abajo no sea necesario
+ #Falta agregar que pasa si el producto no esta en el dicc
+ # o tal vez de eso se encarga otra funcion, lo que haria (creo) 
+ # que todo lo de abajo no sea necesario
 
     try:
         #Checkeo si existe ese producto dentro de Comestibles
