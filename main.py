@@ -67,14 +67,15 @@ def comprar(dicc):
     while terminar == False:
         
 
-        usuarioInput = input("Sabe lo que quiere comprar: (si/no)").lower()
+        usuarioInput = input("Sabe lo que quiere comprar (si/no): ").lower()
 
         #Fijar que haya escrito si o no
-        if usuarioInput != "no" or usuarioInput != "si":
-            continue
+        #if usuarioInput != "no" or usuarioInput != "si":
+         #   continue
 
         #No sabe lo que quiere comprar
-        elif usuarioInput == "no":
+        #elif usuarioInput == "no":
+        if usuarioInput == "no":
             mostrarProductos(dicc)
             continue
 
@@ -82,19 +83,20 @@ def comprar(dicc):
         else:
             productoComprar = input("Ingrese el nombre del producto: ").lower()
 
-            total = precio(dicc, productoComprar) 
+            total = precio(dicc, productoComprar) + total
+            print(f"su total actual es de ${total}") 
 
-        continuarInput = input("Desea seguir comprando?: (si/no)").lower()
+        continuarInput = input("Desea seguir comprando? (si/no): ").lower()
 
         if continuarInput == "si":
             continue
         else:
             terminar == True
-            continue
+            break
 
     
 
-    print(f"Tu total es {total}")
+    print(f"Tu total es ${total}")
     print("Gracias por comprar!")
 
 
