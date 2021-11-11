@@ -101,11 +101,13 @@ def comprar(dicc):
         #Si sabe lo que quiere comprar    
         else:
             productoComprar = input("Ingrese el nombre del producto: ").lower()
+            cantidad = int(input("Cuantos quiere comprar?: "))
 
-            #agrego el producto al "ticket" para despues sacar stock de cada 1
-            #faltaria agregar la cantidad que quiere comprar de cada producto
-            ticket.append(productoComprar)
-            total = precio(dicc, productoComprar) + total
+            #agrego el producto y cantidad al "ticket" para despues sacar stock de cada 1
+            # el ticket va a ser una "lista de listas", cada producto y cantidad su propia lista
+            ticket.append([productoComprar,cantidad])
+
+            total = precio(dicc, productoComprar) * cantidad + total
             
             print(f"su total actual es de ${total}") 
 
@@ -120,7 +122,7 @@ def comprar(dicc):
     #Loop para sacar stock de cada producto del ticket     
     for item in ticket:
         # 1 por ahora, mas adelante va a ser dependiendo cuantos compre de cada 1
-        sacarStock(dicc, item, 1)
+        sacarStock(dicc, item[0], item[1])
 
 
     print(f"Tu total es ${total}")
