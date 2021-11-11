@@ -81,6 +81,7 @@ def comprar(dicc):
     #terminar variable para que siga el programa hasta que el usuario haga el "checkout"
     terminar = False
     total = 0
+    ticket = []
 
     while terminar == False:
         
@@ -101,7 +102,11 @@ def comprar(dicc):
         else:
             productoComprar = input("Ingrese el nombre del producto: ").lower()
 
+            #agrego el producto al "ticket" para despues sacar stock de cada 1
+            #faltaria agregar la cantidad que quiere comprar de cada producto
+            ticket.append(productoComprar)
             total = precio(dicc, productoComprar) + total
+            
             print(f"su total actual es de ${total}") 
 
         continuarInput = input("Desea seguir comprando? (si/no): ").lower()
@@ -112,10 +117,17 @@ def comprar(dicc):
             terminar == True
             break
 
-    
+    #Loop para sacar stock de cada producto del ticket     
+    for item in ticket:
+        # 1 por ahora, mas adelante va a ser dependiendo cuantos compre de cada 1
+        sacarStock(dicc, item, 1)
+
 
     print(f"Tu total es ${total}")
     print("Gracias por comprar!")
 
 
+
+
+# ------------ Testing Program / Functions-------------------------
 comprar(data)
