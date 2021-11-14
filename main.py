@@ -38,8 +38,6 @@ def precio(dicc, producto):
     ''' Devuelve el precio del producto seleccionado
     '''
  
- 
- 
  #Falta agregar que pasa si el producto no esta en el dicc
  # o tal vez de eso se encarga otra funcion, lo que haria (creo) 
  # que todo lo de abajo no sea necesario
@@ -57,8 +55,6 @@ def mostrarProductos(dicc):
     """ Muestra TODOS los productos dentro del archivo, incluidos los precios y stock
     """
 
-
-
     for producto in dicc:
 
         print(f"{producto} - ${dicc[producto][1]}; hay en total: {dicc[producto][2]} en stock")
@@ -67,8 +63,7 @@ def mostrarProductos(dicc):
 def sacarStock(dicc, producto, cantidad):
     
     """ Saca Stock del producto seleccionado
-    """
-   
+    """  
    
     # Abrir para actualizarlo
     f = open("productos.json", "w")
@@ -88,7 +83,6 @@ def comprar(dicc):
     ''' Pregunta al usuario si sabe lo que quiere comprar. En caso de que no sepa, muestra la lista de productos
         en caso de que sepa lo que quiere, se le pregunta el nombre del producto y se agrega al "carrito"
     '''
-    
     
     #terminar variable para que siga el programa hasta que el usuario haga el "checkout"
     terminar = False
@@ -141,8 +135,6 @@ def comprar(dicc):
     print("Gracias por comprar!")
 
 
-
-
 # ---------------------------- Admin functions ------------------------------------------
 def agregarStock(dicc, producto, cantidad):
 
@@ -166,8 +158,6 @@ def agregarProducto(dicc, producto, precio, cantidad):
     haciendo el diccionario/json de forma ordenada, basta con saber cual es el id del ultimo producto
     y sumarle 1
     '''
-
-
 
     # para agarrar el ultimo elemento del diccionario -> list(dicc)[-1]
     ultimoProducto = list(dicc)[-1]
