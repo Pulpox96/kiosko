@@ -1,2 +1,2 @@
 # Kiosko
-Simple programa de un kiosko para practicar Python
+Simple programa de un kiosko para practicar Python.
