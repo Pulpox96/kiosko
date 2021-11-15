@@ -75,6 +75,10 @@ def sacarStock(dicc, producto, cantidad):
 
     f.close()
 
+def productoExiste(dicc,producto):
+    if producto in dicc:
+        return True
+    return False 
 
 
 # ---------------------------- User functions ------------------------------------------
@@ -105,8 +109,13 @@ def comprar(dicc):
             continue
 
         #Si sabe lo que quiere comprar    
-        else:
+        elif usuarioInput == "si":
+
             productoComprar = input("Ingrese el nombre del producto: ").lower()
+
+            while not productoExiste(dicc, productoComprar):
+                productoComprar = input('Ingresa bien el nombre del producto: ').lower()
+            
             cantidad = int(input("Cuantos quiere comprar?: "))
 
             #agrego el producto y cantidad al "ticket" para despues sacar stock de cada 1
@@ -116,6 +125,11 @@ def comprar(dicc):
             total = precio(dicc, productoComprar) * cantidad + total
             
             print(f"su total actual es de ${total}") 
+            
+        else: 
+            print("escriba si o no")
+
+            continue
 
         continuarInput = input("Desea seguir comprando? (si/no): ").lower()
 
@@ -194,4 +208,6 @@ def sacarProducto(dicc, producto):
 
 # ------------ Testing Program / Functions--------------------------
 
-sacarProducto(data, "chicle")
+
+
+comprar(data)
