@@ -13,7 +13,7 @@ productos = {
 	    "fosforos": [11, 50, 50],
 	    "vela": [12, 10, 50]
 	    "nuevo": [12, 10, 50],
-        "nuevo2": [12, 10, 50],
+        
 }
 """
 # Import json para leer el archivo
