@@ -11,9 +11,7 @@ productos = {
         "lavandina": [6, 120, 40],
         "detergente": [10, 100, 20],
 	    "fosforos": [11, 50, 50],
-	    "vela": [12, 10, 50]
-	    "nuevo": [12, 10, 50],
-        
+	    "vela": [12, 10, 50] 
 }
 """
 # Import json para leer el archivo
