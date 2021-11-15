@@ -19,7 +19,7 @@ import json
 
 # Data ahora es el diccionario a manejar adentro del programa
 f = open("productos.json")
-data = json.load(f)
+dicc = json.load(f)
 
 #close el archivo original
 f.close()
@@ -80,13 +80,14 @@ def productoExiste(dicc,producto):
         return True
     return False 
 
-
+def saberStock(dicc,producto):
+    return dicc[producto][2] 
 # ---------------------------- User functions ------------------------------------------
-
+'''
 def comprar(dicc):
-    ''' Pregunta al usuario si sabe lo que quiere comprar. En caso de que no sepa, muestra la lista de productos
+        Pregunta al usuario si sabe lo que quiere comprar. En caso de que no sepa, muestra la lista de productos
         en caso de que sepa lo que quiere, se le pregunta el nombre del producto y se agrega al "carrito"
-    '''
+    
     
     #terminar variable para que siga el programa hasta que el usuario haga el "checkout"
     terminar = False
@@ -94,8 +95,7 @@ def comprar(dicc):
     ticket = []
 
     while terminar == False:
-        
-
+    
         usuarioInput = input("Sabe lo que quiere comprar (si/no): ").lower()
 
         #Fijar que haya escrito si o no
@@ -115,7 +115,7 @@ def comprar(dicc):
 
             while not productoExiste(dicc, productoComprar):
                 productoComprar = input('Ingresa bien el nombre del producto: ').lower()
-            
+
             cantidad = int(input("Cuantos quiere comprar?: "))
 
             #agrego el producto y cantidad al "ticket" para despues sacar stock de cada 1
@@ -147,8 +147,7 @@ def comprar(dicc):
 
     print(f"Tu total es ${total}")
     print("Gracias por comprar!")
-
-
+'''
 # ---------------------------- Admin functions ------------------------------------------
 def agregarStock(dicc, producto, cantidad):
 
@@ -208,6 +207,73 @@ def sacarProducto(dicc, producto):
 
 # ------------ Testing Program / Functions--------------------------
 
+#comprar(data)
 
 
-comprar(data)
+#--------------------------------------------------------------------
+
+print("Bienvenido ")
+print()
+#terminar variable para que siga el programa hasta que el usuario haga el "checkout"
+terminar = False
+total = 0
+ticket = []
+
+while terminar == False:
+
+    usuarioInput = input("Sabe lo que quiere comprar (si/no): ").lower()
+
+    #Fijar que haya escrito si o no
+    #if usuarioInput != "no" or usuarioInput != "si":
+    #   continue
+
+    #No sabe lo que quiere comprar
+    #elif usuarioInput == "no":
+    if usuarioInput == "no":
+        mostrarProductos(dicc)
+        continue
+
+    #Si sabe lo que quiere comprar    
+    elif usuarioInput == "si":
+
+        productoComprar = input("Ingrese el nombre del producto: ").lower()
+
+        while not productoExiste(dicc, productoComprar):
+            productoComprar = input('Ingresa bien el nombre del producto: ').lower()
+
+        cantidad = int(input("Cuantos quiere comprar?: "))
+        
+        while saberStock(dicc,productoComprar) < cantidad:
+            print("solo hay",saberStock(dicc,productoComprar))
+            cantidad = int(input("por favor ingrese un valor menor o igual: "))
+            
+
+        #agrego el producto y cantidad al "ticket" para despues sacar stock de cada 1
+        # el ticket va a ser una "lista de listas", cada producto y cantidad su propia lista
+        ticket.append([productoComprar,cantidad])
+
+        total = precio(dicc, productoComprar) * cantidad + total
+        
+        print(f"su total actual es de ${total}") 
+        
+    else: 
+        print("escriba si o no")
+
+        continue
+
+    continuarInput = input("Desea seguir comprando? (si/no): ").lower()
+
+    if continuarInput == "si":
+        continue
+    else:
+        terminar == True
+        break
+
+#Loop para sacar stock de cada producto del ticket     
+for item in ticket:
+    # 1 por ahora, mas adelante va a ser dependiendo cuantos compre de cada 1
+    sacarStock(dicc, item[0], item[1])
+
+
+print(f"Tu total es ${total}")
+print("Gracias por comprar!")
