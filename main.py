@@ -83,6 +83,10 @@ def productoExiste(dicc,producto):
 
 def saberStock(dicc,producto):
     return dicc[producto][2] 
+
+def espacio():
+    '''Usar para dejar un espacio entre prints'''
+    print()    
 # ---------------------------- User functions ------------------------------------------
 '''
 def comprar(dicc):
@@ -214,7 +218,8 @@ def sacarProducto(dicc, producto):
 #--------------------------------------------------------------------
 
 print("Bienvenido ")
-print()
+espacio()
+
 #terminar variable para que siga el programa hasta que el usuario haga el "checkout"
 terminar = False
 total = 0
@@ -229,55 +234,65 @@ while terminar == False:
     #   continue
 
     #No sabe lo que quiere comprar
-    #elif usuarioInput == "no":
     if usuarioInput == "no":
         mostrarProductos(dicc)
         continue
 
     #Si sabe lo que quiere comprar    
     elif usuarioInput == "si":
+        # contador de errores 
         errorNombreProducto = 0
+
         productoComprar = input("Ingrese el nombre del producto: ").lower()
     
         while not productoExiste(dicc, productoComprar):
-            productoComprar = input('Ingresa bien el nombre del producto: ').lower()
+            productoComprar = input('Fijese de escribir bien el nombre del producto: ').lower()
+
             errorNombreProducto += 1
             if errorNombreProducto >= 3:
-                print()
+                espacio()
                 print("Por favor ingrese uno de los productos disponibles: ")
-                print()
+                espacio()
                 mostrarProductos(dicc)
-                print()
+                espacio()
                 errorNombreProducto = 0
                 continue
 
         cantidad = int(input("Cuantos quiere comprar?: "))
             
+        # Si el usuario entra un numero mayor al stock disponible
         while saberStock(dicc,productoComprar) < cantidad:
-            print("solo hay",saberStock(dicc,productoComprar))
+
+            print("solo hay", saberStock(dicc,productoComprar))
+
             cantidad = int(input("por favor ingrese un valor menor o igual: "))
             
 
-        #agrego el producto y cantidad al "ticket" para despues sacar stock de cada 1
+        # agrego el producto y cantidad al "ticket" para despues sacar stock de cada 1
         # el ticket va a ser una "lista de listas", cada producto y cantidad su propia lista
         ticket.append([productoComprar,cantidad])
 
         total = precio(dicc, productoComprar) * cantidad + total
         
-        print(f"su total actual es de ${total}") 
+        print(f"Su total actual es de ${total}") 
         
     else: 
         print("escriba si o no")
-
         continue
 
     continuarInput = input("Desea seguir comprando? (si/no): ").lower()
 
+    while continuarInput != "si" and continuarInput  != "no":
+        print("Solo escribir Si o No")
+        espacio()
+        continuarInput = input("Desea seguir comprando? (si/no): ").lower() 
+
     if continuarInput == "si":
         continue
-    else:
+    elif continuarInput == "no":
         terminar == True
         break
+        
 
 #Loop para sacar stock de cada producto del ticket     
 for item in ticket:
@@ -285,5 +300,5 @@ for item in ticket:
     sacarStock(dicc, item[0], item[1])
 
 
-print(f"Tu total es ${total}")
+print(f"Su total es ${total}")
 print("Gracias por comprar!")
