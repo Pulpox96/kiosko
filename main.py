@@ -16,6 +16,7 @@ productos = {
 """
 # Import json para leer el archivo
 import json
+from os import error
 
 # Data ahora es el diccionario a manejar adentro del programa
 f = open("productos.json")
@@ -235,14 +236,23 @@ while terminar == False:
 
     #Si sabe lo que quiere comprar    
     elif usuarioInput == "si":
-
+        errorNombreProducto = 0
         productoComprar = input("Ingrese el nombre del producto: ").lower()
-
+    
         while not productoExiste(dicc, productoComprar):
             productoComprar = input('Ingresa bien el nombre del producto: ').lower()
+            errorNombreProducto += 1
+            if errorNombreProducto >= 3:
+                print()
+                print("Por favor ingrese uno de los productos disponibles: ")
+                print()
+                mostrarProductos(dicc)
+                print()
+                errorNombreProducto = 0
+                continue
 
         cantidad = int(input("Cuantos quiere comprar?: "))
-        
+            
         while saberStock(dicc,productoComprar) < cantidad:
             print("solo hay",saberStock(dicc,productoComprar))
             cantidad = int(input("por favor ingrese un valor menor o igual: "))
