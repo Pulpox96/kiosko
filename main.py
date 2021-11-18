@@ -303,17 +303,7 @@ def adminRun():
 
         while not stockNuevo.isnumeric():
             stockNuevo = input(f"La cantidad a agregar debe ser un numero: ")
-
-        '''
-        # Uso este try except para que no se rompa el programa si el usuario no ingresa un numero
-        # Preferimos que se agreguen 0 para que el programa pueda continuar. No pudimos solucionar
-        # la forma de solo aceptar un numero
-        try:
-            stockNuevo = int(stockNuevo)
-        except:
-            print("Debe escribir un numero entero. Se agregaran 0 del producto, puede modificarlo cuando quiera")
-            stockNuevo = 0
-        '''
+            
         
         precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
         espacio()
@@ -323,14 +313,7 @@ def adminRun():
             espacio()
             precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
 
-        '''
-        # Uso este try except para que no se rompa el programa si el usuario no ingresa un numero
-        try:
-            precioNuevo = int(precioNuevo)
-        except:
-            print("Debe escribir un numero entero. El producto vale $0, puede modificarlo cuando quiera")
-            precioNuevo = 0
-        '''
+    
         # Una vez listo, se agrega el producto
         agregarProducto(dicc, productoNuevo, precioNuevo, stockNuevo)
         print(f"{productoNuevo} se agrego correctamente")
