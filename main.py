@@ -55,14 +55,18 @@ def mostrarProductos(dicc):
 
     """ Muestra TODOS los productos dentro del archivo, incluidos los precios y stock
     """
-    
+
+    print("-------------------------------")
+    espacio()
+
     for producto in dicc:
 
-        
-       
-       print(f"{producto} - ${dicc[producto][1]}; hay en total: {dicc[producto][2]} en stock")
-       print("------------")
+        print(f"{producto} - ${dicc[producto][1]} ")
+        print(f"Stock disponible: cantidad {dicc[producto][2]} ")
+        espacio()
 
+
+    print("-------------------------------")
 def sacarStock(dicc, producto, cantidad):
     
     """ Saca Stock del producto seleccionado
@@ -241,7 +245,7 @@ if userInput == "user":
     while terminar == False:
 
         usuarioInput = input("Sabe lo que quiere comprar (si/no): ").lower()
-
+        espacio()
         #Fijar que haya escrito si o no
         #if usuarioInput != "no" or usuarioInput != "si":
         #   continue
@@ -249,6 +253,7 @@ if userInput == "user":
         #No sabe lo que quiere comprar
         if usuarioInput == "no":
             mostrarProductos(dicc)
+            espacio()
             continue
 
         #Si sabe lo que quiere comprar    
