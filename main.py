@@ -114,71 +114,7 @@ def espacio():
     print()
 
 # ---------------------------- Funciones Usuario ------------------------------------------
-'''
-def comprar(dicc):
-        Pregunta al usuario si sabe lo que quiere comprar. En caso de que no sepa, muestra la lista de productos
-        en caso de que sepa lo que quiere, se le pregunta el nombre del producto y se agrega al "carrito"
-    
-    
-    #terminar variable para que siga el programa hasta que el usuario haga el "checkout"
-    terminar = False
-    total = 0
-    ticket = []
 
-    while terminar == False:
-    
-        usuarioInput = input("Sabe lo que quiere comprar (si/no): ").lower()
-
-        #Fijar que haya escrito si o no
-        #if usuarioInput != "no" or usuarioInput != "si":
-         #   continue
-
-        #No sabe lo que quiere comprar
-        #elif usuarioInput == "no":
-        if usuarioInput == "no":
-            mostrarProductos(dicc)
-            continue
-
-        #Si sabe lo que quiere comprar    
-        elif usuarioInput == "si":
-
-            productoComprar = input("Ingrese el nombre del producto: ").lower()
-
-            while not productoExiste(dicc, productoComprar):
-                productoComprar = input('Ingresa bien el nombre del producto: ').lower()
-
-            cantidad = int(input("Cuantos quiere comprar?: "))
-
-            #agrego el producto y cantidad al "ticket" para despues sacar stock de cada 1
-            # el ticket va a ser una "lista de listas", cada producto y cantidad su propia lista
-            ticket.append([productoComprar,cantidad])
-
-            total = precio(dicc, productoComprar) * cantidad + total
-            
-            print(f"su total actual es de ${total}") 
-            
-        else: 
-            print("escriba si o no")
-
-            continue
-
-        continuarInput = input("Desea seguir comprando? (si/no): ").lower()
-
-        if continuarInput == "si":
-            continue
-        else:
-            terminar == True
-            break
-
-    #Loop para sacar stock de cada producto del ticket     
-    for item in ticket:
-        # 1 por ahora, mas adelante va a ser dependiendo cuantos compre de cada 1
-        sacarStock(dicc, item[0], item[1])
-
-
-    print(f"Tu total es ${total}")
-    print("Gracias por comprar!")
-'''
 def usuarioRun():
     #terminar variable para que siga el programa hasta que el usuario haga el "checkout"
     terminar = False
@@ -279,8 +215,6 @@ def usuarioRun():
         print("Se cancelo la compra.")
 
 
-    
-
 # ---------------------------- Funciones Administrador ------------------------------------------
 def agregarStock(dicc, producto, cantidad):
 
@@ -338,6 +272,9 @@ def eliminarProducto(dicc, producto):
 
     f.close() 
 
+#def checkIfNumber(x):
+
+
 def adminRun():
     
     print("(1) Agregar producto nuevo")
@@ -364,6 +301,10 @@ def adminRun():
 
         stockNuevo = input(f"Escriba la cantidad a agregar de {productoNuevo}: ")
 
+        while not stockNuevo.isnumeric():
+            stockNuevo = input(f"La cantidad a agregar debe ser un numero: ")
+
+        '''
         # Uso este try except para que no se rompa el programa si el usuario no ingresa un numero
         # Preferimos que se agreguen 0 para que el programa pueda continuar. No pudimos solucionar
         # la forma de solo aceptar un numero
@@ -372,19 +313,27 @@ def adminRun():
         except:
             print("Debe escribir un numero entero. Se agregaran 0 del producto, puede modificarlo cuando quiera")
             stockNuevo = 0
-        
+        '''
         
         precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
-        
+        espacio()
+
+        while not precioNuevo.isnumeric():
+            print("El precio debe ser un numero!")
+            espacio()
+            precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
+
+        '''
         # Uso este try except para que no se rompa el programa si el usuario no ingresa un numero
         try:
             precioNuevo = int(precioNuevo)
         except:
             print("Debe escribir un numero entero. El producto vale $0, puede modificarlo cuando quiera")
             precioNuevo = 0
-        
+        '''
         # Una vez listo, se agrega el producto
         agregarProducto(dicc, productoNuevo, precioNuevo, stockNuevo)
+        print(f"{productoNuevo} se agrego correctamente")
 
     elif userInput == "2":
 
@@ -420,7 +369,7 @@ def adminRun():
 
         if seguro == "si":
             eliminarProducto(dicc, producto)
-            print(f"{producto} se elimino ")
+            print(f"{producto} se elimino correctamente")
         else:
             print(f"{producto} no se eliminara")
             
