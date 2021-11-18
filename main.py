@@ -51,11 +51,23 @@ def precio(dicc, producto):
     except:
         return "Algo salio mal, pruebe devuelta"
 
+from tabulate import tabulate
+
 def mostrarProductos(dicc):
 
     """ Muestra TODOS los productos dentro del archivo, incluidos los precios y stock
+        Usamos el paquete "tabulate"
     """
 
+    listaTabular = []
+
+    for producto in dicc:
+        listaTabular.append([producto, dicc[producto][1], dicc[producto][2]])
+    
+    print(tabulate(listaTabular, headers=['Producto', 'Precio ($)', 'Stock']))
+    
+    
+    '''
     print("-------------------------------")
     espacio()
 
@@ -67,6 +79,8 @@ def mostrarProductos(dicc):
 
 
     print("-------------------------------")
+    '''
+
 def sacarStock(dicc, producto, cantidad):
     
     """ Saca Stock del producto seleccionado
@@ -225,6 +239,7 @@ def eliminarProducto(dicc, producto):
 
 #----------------------------- Programa Principal ----------------------------------------
 
+"""
 
 print("Bienvenido")
 espacio()
@@ -407,10 +422,9 @@ else:
         else:
             print(f"{producto} no se eliminara")
             
-
+"""
         
 
 # ------------ Testing Program / Functions--------------------------
 
-#mostrarProductos(dicc)
-
+mostrarProductos(dicc)
