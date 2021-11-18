@@ -55,11 +55,13 @@ def mostrarProductos(dicc):
 
     """ Muestra TODOS los productos dentro del archivo, incluidos los precios y stock
     """
-
+    
     for producto in dicc:
 
-        print(f"{producto} - ${dicc[producto][1]}; hay en total: {dicc[producto][2]} en stock")
-        print("------------")
+        
+       
+       print(f"{producto} - ${dicc[producto][1]}; hay en total: {dicc[producto][2]} en stock")
+       print("------------")
 
 def sacarStock(dicc, producto, cantidad):
     
@@ -77,11 +79,15 @@ def sacarStock(dicc, producto, cantidad):
     f.close()
 
 def productoExiste(dicc,producto):
+    '''Returns True si existe el producto, False si no'''
+    
     if producto in dicc:
         return True
     return False 
 
 def saberStock(dicc,producto):
+    '''Devuelve la cantidad de stock del producto seleccionado'''
+    
     return dicc[producto][2] 
 
 def espacio():
@@ -214,6 +220,7 @@ def eliminarProducto(dicc, producto):
 
 
 #----------------------------- Programa Principal ----------------------------------------
+
 
 print("Bienvenido")
 espacio()
@@ -400,5 +407,5 @@ else:
 
 # ------------ Testing Program / Functions--------------------------
 
-#comprar(data)
+#mostrarProductos(dicc)
 
