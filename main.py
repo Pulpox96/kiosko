@@ -272,7 +272,7 @@ def eliminarProducto(dicc, producto):
 
     f.close() 
 
-#def checkIfNumber(x):
+
 
 
 def adminRun():
@@ -302,14 +302,14 @@ def adminRun():
         stockNuevo = input(f"Escriba la cantidad a agregar de {productoNuevo}: ")
 
         while not stockNuevo.isnumeric():
-            stockNuevo = input(f"La cantidad a agregar debe ser un numero: ")
-            
+            stockNuevo = input(f"La cantidad a agregar debe ser un numero y mayor que 0: ")
+           
         
         precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
         espacio()
 
         while not precioNuevo.isnumeric():
-            print("El precio debe ser un numero!")
+            print("El precio debe ser un numero y mayor que 0!")
             espacio()
             precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
 
@@ -318,6 +318,8 @@ def adminRun():
         agregarProducto(dicc, productoNuevo, precioNuevo, stockNuevo)
         print(f"{productoNuevo} se agrego correctamente")
 
+    
+    # Agregar stock
     elif userInput == "2":
 
         producto = input("Ingrese el producto a agregar stock: ").lower()
@@ -327,16 +329,17 @@ def adminRun():
         
         stockNuevo = input("Ingrese la cantidad a agregar: ")
 
-        try:
-            stockNuevo = int(stockNuevo)
-        except:
-            print("No ingreso un numero, el producto quedara con la misma cantidad. Intente denuevo.")
-            stockNuevo = 0
+        while not stockNuevo.isnumeric():
+            print("El precio debe ser un numero y mayor que 0!")
+            espacio()
+            stockNuevo = input(f"Escriba el precio de {stockNuevo}: $")
         
-        if stockNuevo != 0:
-            agregarStock(dicc, producto, stockNuevo)
-            print(f"Ahora hay de {producto} {saberStock(dicc, producto)} en stock")
+        
+        agregarStock(dicc, producto, stockNuevo)
+        print(f"Ahora hay de {producto} {saberStock(dicc, producto)} en stock")
 
+    
+    # Eliminar Producto
     elif userInput == "3":
 
         producto = input("Escriba el nombre del producto a eliminar: ").lower()
@@ -367,188 +370,10 @@ espacio()
 userInput = input("Es un usuario o un Administrador? (user/admin): ").lower()
 espacio()
 
+# Checkear que solo ingrese User / Admin
 while userInput != "user" and  userInput != "admin":
     userInput = input("Escriba 'user' o 'admin': ").lower()
 
-'''
-
-# Si el que maneja el programa es un usuario
-if userInput == "user":
-
-    #terminar variable para que siga el programa hasta que el usuario haga el "checkout"
-    terminar = False
-    total = 0
-    ticket = []
-
-    while terminar == False:
-
-        usuarioInput = input("Sabe lo que quiere comprar (si/no): ").lower()
-        espacio()
-        #Fijar que haya escrito si o no
-        #if usuarioInput != "no" or usuarioInput != "si":
-        #   continue
-
-        #No sabe lo que quiere comprar
-        if usuarioInput == "no":
-            mostrarProductos(dicc)
-            espacio()
-            continue
-
-        #Si sabe lo que quiere comprar    
-        elif usuarioInput == "si":
-            # contador de errores 
-            errorNombreProducto = 0
-
-            productoComprar = input("Ingrese el nombre del producto: ").lower()
-        
-            while not productoExiste(dicc, productoComprar):
-                productoComprar = input('Fijese de escribir bien el nombre del producto: ').lower()
-
-                errorNombreProducto += 1
-                if errorNombreProducto >= 3:
-                    espacio()
-                    print("Por favor ingrese uno de los productos disponibles: ")
-                    espacio()
-                    mostrarProductos(dicc)
-                    espacio()
-                    errorNombreProducto = 0
-                    continue
-
-            cantidad = int(input("Cuantos quiere comprar?: "))
-                
-            # Si el usuario entra un numero mayor al stock disponible
-            while saberStock(dicc,productoComprar) < cantidad:
-
-                print("solo hay", saberStock(dicc,productoComprar))
-
-                cantidad = int(input("por favor ingrese un valor menor o igual: "))
-                
-
-            # agrego el producto y cantidad al "ticket" para despues sacar stock de cada 1
-            # el ticket va a ser una "lista de listas", cada producto y cantidad su propia lista
-            ticket.append([productoComprar,cantidad])
-
-            total = precio(dicc, productoComprar) * cantidad + total
-            
-            print(f"Su total actual es de ${total}") 
-            
-        else: 
-            print("escriba si o no")
-            continue
-
-        continuarInput = input("Desea seguir comprando? (si/no): ").lower()
-
-        while continuarInput != "si" and continuarInput  != "no":
-            print("Solo escribir Si o No")
-            espacio()
-            continuarInput = input("Desea seguir comprando? (si/no): ").lower() 
-
-        if continuarInput == "si":
-            continue
-        elif continuarInput == "no":
-            terminar == True
-            break
-            
-
-    #Loop para sacar stock de cada producto del ticket     
-    for item in ticket:
-        # 1 por ahora, mas adelante va a ser dependiendo cuantos compre de cada 1
-        sacarStock(dicc, item[0], item[1])
-
-
-    print(f"Su total es ${total}")
-    print("Gracias por comprar!")
-
-# Si el que maneja el programa es un administrador
-else:
-    print("(1) Agregar producto nuevo")
-    print("(2) Agregar Stock")
-    print("(3) Eliminar producto")
-    espacio()
-
-    userInput = input("Que desea hacer: ").lower()
-
-    while userInput != "1" and userInput != "2" and userInput != "3":
-        userInput =  input("Elija 1, 2 o 3: ").lower()
-
-    # Agregar producto nuevo
-    if userInput == "1":
-        
-        productoNuevo = input("Escriba el nombre del producto: ").lower()
-
-        # Si el producto ya esta agregado, entra a este while y le pregunta devuelta
-        while productoExiste(dicc, productoNuevo):
-            print("Ese producto ya existe, escriba uno que no este")
-            espacio()
-            productoNuevo = input("Escriba el nombre del producto: ").lower()
-       
-
-        stockNuevo = input(f"Escriba la cantidad a agregar de {productoNuevo}: ")
-
-        # Uso este try except para que no se rompa el programa si el usuario no ingresa un numero
-        # Preferimos que se agreguen 0 para que el programa pueda continuar. No pudimos solucionar
-        # la forma de solo aceptar un numero
-        try:
-            stockNuevo = int(stockNuevo)
-        except:
-            print("Debe escribir un numero entero. Se agregaran 0 del producto, puede modificarlo cuando quiera")
-            stockNuevo = 0
-        
-        
-        precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
-        
-        # Uso este try except para que no se rompa el programa si el usuario no ingresa un numero
-        try:
-            precioNuevo = int(precioNuevo)
-        except:
-            print("Debe escribir un numero entero. El producto vale $0, puede modificarlo cuando quiera")
-            precioNuevo = 0
-        
-        # Una vez listo, se agrega el producto
-        agregarProducto(dicc, productoNuevo, precioNuevo, stockNuevo)
-
-    elif userInput == "2":
-
-        producto = input("Ingrese el producto a agregar stock: ").lower()
-
-        while not productoExiste(dicc, producto): 
-            producto = input(f"{producto} no existe. Ingrese un producto que si este: ").lower()
-        
-        stockNuevo = input("Ingrese la cantidad a agregar: ")
-
-        try:
-            stockNuevo = int(stockNuevo)
-        except:
-            print("No ingreso un numero, el producto quedara con la misma cantidad. Intente denuevo.")
-            stockNuevo = 0
-        
-        if stockNuevo != 0:
-            agregarStock(dicc, producto, stockNuevo)
-            print(f"Ahora hay de {producto} {saberStock(dicc, producto)} en stock")
-
-    elif userInput == "3":
-
-        producto = input("Escriba el nombre del producto a eliminar: ").lower()
-
-        while not productoExiste(dicc, producto):
-            producto = input("Ese producto no existe, escriba uno que si este: ")
-        
-        seguro = input(f"{producto} va a ser eliminado definitivamente, esta seguro (si/no): ").lower()
-        
-        while seguro != "si" and seguro != "no":
-
-            seguro = input("Solo escriba 'si' o 'no': ").lower()
-
-        if seguro == "si":
-            eliminarProducto(dicc, producto)
-            print(f"{producto} se elimino ")
-        else:
-            print(f"{producto} no se eliminara")
-            
-
-     
-
-'''  
 if userInput == "user":
     usuarioRun()
 else:
