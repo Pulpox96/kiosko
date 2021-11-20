@@ -21,11 +21,11 @@ import json
 from tabulate import tabulate 
 
 # Data ahora es el diccionario a manejar adentro del programa
-f = open("productos.json")
-dicc = json.load(f)
 
-#close el archivo original
-f.close()
+with open("productos.json") as f:
+    
+    dicc = json.load(f)
+
 
 # Hay que usar la funcion "Dump" para actualizar el archivo json
 #  json_object["d"] = 100 -> aca se actualiza el "D" al nuevo valor 100
@@ -53,34 +53,21 @@ def precio(dicc, producto):
     except:
         return "Algo salio mal, pruebe devuelta"
 
-
 def mostrarProductos(dicc):
 
     """ Muestra TODOS los productos dentro del archivo, incluidos los precios y stock
-        Usamos el paquete "tabulate"
+        Usamos el paquete "tabulate" para imprimir -> Documentacion en: https://pypi.org/project/tabulate/
     """
 
     listaTabular = []
 
+    # listaTabular se guardaria asi -> [[chicle, 10, 50], [harina, 40, 41]] etc
     for producto in dicc:
         listaTabular.append([producto, dicc[producto][1], dicc[producto][2]])
     
-    print(tabulate(listaTabular, headers=['Producto', 'Precio ($)', 'Stock']))
-    
-    
-    '''
-    print("-------------------------------")
-    espacio()
-
-    for producto in dicc:
-
-        print(f"{producto} - ${dicc[producto][1]} ")
-        print(f"Stock disponible: cantidad {dicc[producto][2]} ")
-        espacio()
+    print(tabulate(listaTabular, headers=['Producto', 'Precio ($)', 'Stock'], tablefmt="github"))
 
 
-    print("-------------------------------")
-    '''
 
 def sacarStock(dicc, producto, cantidad):
     
@@ -110,7 +97,7 @@ def saberStock(dicc,producto):
     return dicc[producto][2] 
 
 def espacio():
-    '''Usar para dejar un espacio entre prints'''
+    '''Usar para dejar un espacio entre prints e inputs'''
     print()
 
 # ---------------------------- Funciones Usuario ------------------------------------------
@@ -245,15 +232,17 @@ def agregarProducto(dicc, producto, precio, cantidad):
     ultimoId = dicc[ultimoProducto][0] + 1 # necesitamos que sea un nuevo id, por eso agrego el +1
 
     # Abrir para actualizarlo
-    f = open("productos.json", "w")
+    #f = open("productos.json", "w")
+    with open("productos.json", "w") as f:
 
-    # Agrego el nuevo producto al diccionario
-    dicc[producto] = [ultimoId,precio,cantidad]
 
-    #actualizo el archivo json y lo cierro.
-    json.dump(dicc, f)
+        # Agrego el nuevo producto al diccionario
+        dicc[producto] = [ultimoId,precio,cantidad]
 
-    f.close()
+        #actualizo el archivo json y lo cierro.
+        json.dump(dicc, f)
+
+    #f.close()
 
 def eliminarProducto(dicc, producto):
    
@@ -261,104 +250,137 @@ def eliminarProducto(dicc, producto):
     """
     
     # Abrir para actualizarlo
-    f = open("productos.json", "w")
+    # f = open("productos.json", "w") -> Es preferible "with open" porque tiene mejor error handling y cierra solo
+    with open("productos.json", "w") as f:
 
-    # Borra el "objeto". En python el key-value es un objeto, y por eso se puede borrar con del
+    # Borra el "objeto". En python el key-value es un objeto, y por eso se puede borrar con "del"
     # otra forma seria usando .pop -> dicc.pop(producto) 
-    del dicc[producto]
+        del dicc[producto]
 
     #actualizo el archivo json y lo cierro.
-    json.dump(dicc, f)
+        json.dump(dicc, f)
 
-    f.close() 
-
-
-
+    #f.close()  -> no es necesario con "with"
 
 def adminRun():
     
-    print("(1) Agregar producto nuevo")
-    print("(2) Agregar Stock")
-    print("(3) Eliminar producto")
-    espacio()
+    seguir = True
 
-    userInput = input("Que desea hacer: ").lower()
-
-    while userInput != "1" and userInput != "2" and userInput != "3":
-        userInput =  input("Elija 1, 2 o 3: ").lower()
-
-    # Agregar producto nuevo
-    if userInput == "1":
-        
-        productoNuevo = input("Escriba el nombre del producto: ").lower()
-
-        # Si el producto ya esta agregado, entra a este while y le pregunta devuelta
-        while productoExiste(dicc, productoNuevo):
-            print("Ese producto ya existe, escriba uno que no este")
-            espacio()
-            productoNuevo = input("Escriba el nombre del producto: ").lower()
-       
-
-        stockNuevo = input(f"Escriba la cantidad a agregar de {productoNuevo}: ")
-
-        while not stockNuevo.isnumeric():
-            stockNuevo = input(f"La cantidad a agregar debe ser un numero y mayor que 0: ")
-           
-        
-        precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
+    while seguir:
+        print("(1) Agregar producto nuevo")
+        print("(2) Agregar Stock")
+        print("(3) Eliminar producto")
+        print("(4) Ver lista de productos")
         espacio()
 
-        while not precioNuevo.isnumeric():
-            print("El precio debe ser un numero y mayor que 0!")
-            espacio()
-            precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
+        userInput = input("Que desea hacer: ").lower()
+        espacio()
 
-    
-        # Una vez listo, se agrega el producto
-        agregarProducto(dicc, productoNuevo, precioNuevo, stockNuevo)
-        print(f"{productoNuevo} se agrego correctamente")
+        while userInput != "1" and userInput != "2" and userInput != "3" and userInput != "4":
+            userInput =  input("Elija 1, 2, 3 o 4: ").lower()
 
-    
-    # Agregar stock
-    elif userInput == "2":
-
-        producto = input("Ingrese el producto a agregar stock: ").lower()
-
-        while not productoExiste(dicc, producto): 
-            producto = input(f"{producto} no existe. Ingrese un producto que si este: ").lower()
-        
-        stockNuevo = input("Ingrese la cantidad a agregar: ")
-
-        while not stockNuevo.isnumeric():
-            print("El precio debe ser un numero y mayor que 0!")
-            espacio()
-            stockNuevo = input(f"Escriba el precio de {stockNuevo}: $")
-        
-        
-        agregarStock(dicc, producto, stockNuevo)
-        print(f"Ahora hay de {producto} {saberStock(dicc, producto)} en stock")
-
-    
-    # Eliminar Producto
-    elif userInput == "3":
-
-        producto = input("Escriba el nombre del producto a eliminar: ").lower()
-
-        while not productoExiste(dicc, producto):
-            producto = input("Ese producto no existe, escriba uno que si este: ")
-        
-        seguro = input(f"{producto} va a ser eliminado definitivamente, esta seguro (si/no): ").lower()
-        
-        while seguro != "si" and seguro != "no":
-
-            seguro = input("Solo escriba 'si' o 'no': ").lower()
-
-        if seguro == "si":
-            eliminarProducto(dicc, producto)
-            print(f"{producto} se elimino correctamente")
-        else:
-            print(f"{producto} no se eliminara")
+        # Agregar producto nuevo
+        if userInput == "1":
             
+            productoNuevo = input("Escriba el nombre del producto: ").lower()
+
+            # Si el producto ya esta agregado, entra a este while y le pregunta devuelta
+            while productoExiste(dicc, productoNuevo):
+                print("Ese producto ya existe, escriba uno que no este")
+                espacio()
+                productoNuevo = input("Escriba el nombre del producto: ").lower()
+        
+
+            stockNuevo = input(f"Escriba la cantidad a agregar de {productoNuevo}: ")
+
+            while not stockNuevo.isnumeric():
+                stockNuevo = input(f"La cantidad a agregar debe ser un numero y mayor que 0: ")
+            
+            
+            precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
+            espacio()
+
+            while not precioNuevo.isnumeric():
+                print("El precio debe ser un numero y mayor que 0!")
+                espacio()
+                precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
+
+        
+            # Una vez listo, se agrega el producto; hay que usar int porque sino agrega el stock y precio como strings
+            agregarProducto(dicc, productoNuevo, int(precioNuevo), int(stockNuevo))
+            print(f"{productoNuevo} se agrego correctamente")
+
+        
+        # Agregar stock
+        elif userInput == "2":
+
+            producto = input("Ingrese el producto a agregar stock: ").lower()
+
+            while not productoExiste(dicc, producto): 
+                producto = input(f"{producto} no existe. Ingrese un producto que si este: ").lower()
+            
+            stockNuevo = input("Ingrese la cantidad a agregar: ")
+
+            while not stockNuevo.isnumeric():
+                print("El precio debe ser un numero y mayor que 0!")
+                espacio()
+                stockNuevo = input(f"Escriba el precio de {stockNuevo}: $")
+            
+            
+            agregarStock(dicc, producto, int(stockNuevo))
+            print(f"Ahora hay de {producto} {saberStock(dicc, producto)} en stock")
+
+        
+        # Eliminar Producto
+        elif userInput == "3":
+
+            while True: # Este while esta para que el usuario pueda escribir cancelar y salir de esta funcion
+                producto = input("Escriba el nombre del producto a eliminar: ").lower()
+                espacio()
+
+                while not productoExiste(dicc, producto):
+                    producto = input("Ese producto no existe, escriba uno que si este o escriba 'cancelar' para salir: ").lower()
+                    espacio()
+                    if producto == "cancelar":
+                        break
+                
+                # necesito 2 cancelar -> break, porque sale de 2 while diferentes
+                if producto == "cancelar":
+                        break
+                
+                seguro = input(f"{producto} va a ser eliminado definitivamente, esta seguro (si/no): ").lower()
+                
+                while seguro != "si" and seguro != "no":
+
+                    seguro = input("Solo escriba 'si' o 'no': ").lower()
+                    espacio()
+
+                if seguro == "si":
+                    eliminarProducto(dicc, producto)
+                    print(f"{producto} se elimino correctamente")
+                    espacio()
+                    break
+                else:
+                    print(f"{producto} no se eliminara")
+                    espacio()
+                    break
+                
+        elif userInput == "4": # no es necesario poner este elif, con un else bastaria, pero si queremos agregar otra funcion, ya tenemos elif
+
+            mostrarProductos(dicc)
+        
+        espacio()
+        seguir = input("Desea seguir usando el programa? (si/no): ").lower()
+        espacio()
+
+        while seguir != "si" and seguir != "no":
+            print("Solo escriba 'Si' o 'No'")
+            espacio()
+            seguir = input("Desea seguir usando el programa? (si/no): ").lower()
+        
+        if seguir == "no":
+            print("Gracias por usar este programa!")
+            break # este break termina el programa
 
 
 #----------------------------- Programa Principal ----------------------------------------
@@ -378,6 +400,3 @@ if userInput == "user":
     usuarioRun()
 else:
     adminRun()
-# ------------ Testing Program / Functions--------------------------
-
-#mostrarProductos(dicc)
