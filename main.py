@@ -101,23 +101,21 @@ def checkCeroNegativo(num):
         Devuelve True solo si el valor es mayor que 0
     '''
 
-    while True:
+    # aprovecho el error de intentar transformar string a int
+    try:
 
-        try:
-            num = int(num)
-
-            # solo devuelve True si es mayor que 0, cualquier otra cosa, devuelve false
-            if num > 0:
-                return True
-            else:
-                print("Por favor ingrese un valor mayor a 0")
-                espacio()
-                return False
-
-        except ValueError: # este es el error si no puede convertir el string a int
-            print("Por favor ingrese un numero")
+        # solo devuelve True si es mayor que 0, cualquier otra cosa, devuelve false
+        if int(num) > 0:
+            return True
+        else:
+            print("Por favor ingrese un valor mayor a 0")
             espacio()
             return False
+
+    except ValueError: # este es el error si no puede convertir el string a int
+        print("Por favor ingrese un numero")
+        espacio()
+        return False
 
 # ---------------------------- Funciones Usuario ------------------------------------------
 
@@ -338,6 +336,7 @@ def adminRun():
         if userInput == "1":
             
             productoNuevo = input("Escriba el nombre del producto: ").lower()
+            espacio()
 
             # Si el producto ya esta agregado, entra a este while y le pregunta devuelta
             while productoExiste(dicc, productoNuevo):
@@ -347,6 +346,7 @@ def adminRun():
         
 
             stockNuevo = input(f"Escriba la cantidad a agregar de {productoNuevo}: ")
+            espacio()
 
             while not checkCeroNegativo(stockNuevo):
                 stockNuevo = input(f"Escriba la cantidad a agregar de {productoNuevo}: ")
@@ -437,7 +437,6 @@ def adminRun():
 
 
 #----------------------------- Programa Principal ----------------------------------------
-
 
 
 print("Bienvenido")
