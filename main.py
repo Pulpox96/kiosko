@@ -20,8 +20,7 @@ import json
 # Import Tabulate para imprimir los productos de forma mas ordenada
 from tabulate import tabulate 
 
-# Data ahora es el diccionario a manejar adentro del programa
-
+# dicc ahora es el diccionario a manejar adentro del programa
 with open("productos.json") as f:
     
     dicc = json.load(f)
@@ -40,10 +39,6 @@ with open("productos.json") as f:
 def precio(dicc, producto):
     ''' Devuelve el precio del producto seleccionado
     '''
- 
- #Falta agregar que pasa si el producto no esta en el dicc
- # o tal vez de eso se encarga otra funcion, lo que haria (creo) 
- # que todo lo de abajo no sea necesario
 
     try:
         #Checkeo si existe ese producto dentro de Comestibles
@@ -51,7 +46,7 @@ def precio(dicc, producto):
             return dicc[producto][1]
 
     except:
-        return "Algo salio mal, pruebe devuelta"
+        print("Algo salio mal, pruebe devuelta")
 
 def mostrarProductos(dicc):
 
@@ -75,14 +70,15 @@ def sacarStock(dicc, producto, cantidad):
     """  
    
     # Abrir para actualizarlo
-    f = open("productos.json", "w")
+    with open("productos.json", "w") as f:
 
-    dicc[producto][2] = dicc[producto][2] - cantidad
+        dicc[producto][2] = dicc[producto][2] - cantidad
 
-    #actualizo el archivo json y lo cierro.
-    json.dump(dicc, f)
-
-    f.close()
+        #actualizo el archivo json y lo cierro.
+        try:
+            json.dump(dicc, f)
+        except:
+            print("No se pudo actualizar archivo")
 
 def productoExiste(dicc,producto):
     '''Returns True si existe el producto, False si no'''
@@ -105,6 +101,7 @@ def espacio():
 def usuarioRun():
     #terminar variable para que siga el programa hasta que el usuario haga el "checkout"
     terminar = False
+    # Total es variable para calcular el precio final
     total = 0
     ticket = []
 
@@ -185,7 +182,7 @@ def usuarioRun():
             cancelar = input("Escriba 'Fin' si esta seguro de la compra o 'Cancelar' para borrar la compra (fin/cancelar): ").lower()
             
             while cancelar != "fin" and cancelar != "cancelar":
-                cancelar = input("Ingrese 'Finalizar' o 'Cancelar': ")
+                cancelar = input("Ingrese 'Fin' o 'Cancelar': ").lower()
 
             terminar == True
             break
@@ -193,8 +190,8 @@ def usuarioRun():
     if cancelar == "fin":
         #Loop para sacar stock de cada producto del ticket     
         for item in ticket:
-            # 1 por ahora, mas adelante va a ser dependiendo cuantos compre de cada 1
             sacarStock(dicc, item[0], item[1])
+
         print(f"Su total es ${total}")
         print("Gracias por comprar!")
 
@@ -209,40 +206,44 @@ def agregarStock(dicc, producto, cantidad):
     """
 
     # Abrir para actualizarlo
-    f = open("productos.json", "w")
+    with open("productos.json", "w") as f:
 
-    dicc[producto][2] = dicc[producto][2] + cantidad
+        dicc[producto][2] = dicc[producto][2] + cantidad
 
-    #actualizo el archivo json y lo cierro.
-    json.dump(dicc, f)
+        #actualizo el archivo json y lo cierro.
+        try:
+            json.dump(dicc, f)
+        except:
+            print("No se pudo actualizar el archivo")
 
-    f.close()
 
 def agregarProducto(dicc, producto, precio, cantidad):
     
     ''' Se agrega un producto totalmente nuevo al json. El id es lo que seria el identificador de cada
     producto si fuera un kiosko real, por eso se necesita que cada id sea diferente. Como estamos 
-    haciendo el diccionario/json de forma ordenada, basta con saber cual es el id del ultimo producto
-    y sumarle 1
+    haciendo el diccionario/json de forma ordenada, es suficiente saber cual es el id del ultimo producto
+    y sumarle 1.
     '''
 
-    # para agarrar el ultimo elemento del diccionario -> list(dicc)[-1]
+    # Si el archivo tuviera miles de productos, probablemente hacer una lista de todos, llevaria tiempo y habria
+    # que buscar una forma mejor.
+
+    # para agarrar el ultimo elemento del diccionario hacer una lista de todo el diccionario -> list(dicc)[-1]
     ultimoProducto = list(dicc)[-1]
 
     ultimoId = dicc[ultimoProducto][0] + 1 # necesitamos que sea un nuevo id, por eso agrego el +1
 
     # Abrir para actualizarlo
-    #f = open("productos.json", "w")
     with open("productos.json", "w") as f:
-
 
         # Agrego el nuevo producto al diccionario
         dicc[producto] = [ultimoId,precio,cantidad]
 
         #actualizo el archivo json y lo cierro.
-        json.dump(dicc, f)
-
-    #f.close()
+        try:
+            json.dump(dicc, f)
+        except:
+            print("No se pudo actualizar archivo")
 
 def eliminarProducto(dicc, producto):
    
@@ -258,8 +259,11 @@ def eliminarProducto(dicc, producto):
         del dicc[producto]
 
     #actualizo el archivo json y lo cierro.
-        json.dump(dicc, f)
-
+        try:
+            json.dump(dicc, f)
+        except:
+            print("No se pudo actualizar archivo")
+            
     #f.close()  -> no es necesario con "with"
 
 def adminRun():
