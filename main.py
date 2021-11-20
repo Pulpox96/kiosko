@@ -63,7 +63,6 @@ def mostrarProductos(dicc):
     print(tabulate(listaTabular, headers=['Producto', 'Precio ($)', 'Stock'], tablefmt="github"))
 
 
-
 def sacarStock(dicc, producto, cantidad):
     
     """ Saca Stock del producto seleccionado
@@ -96,16 +95,41 @@ def espacio():
     '''Usar para dejar un espacio entre prints e inputs'''
     print()
 
+def checkCeroNegativo(num):
+
+    ''' Checkea que el usuario entre un numero correcto, y que sea mayor que 0
+        Devuelve True solo si el valor es mayor que 0
+    '''
+
+    while True:
+
+        try:
+            num = int(num)
+
+            # solo devuelve True si es mayor que 0, cualquier otra cosa, devuelve false
+            if num > 0:
+                return True
+            else:
+                print("Por favor ingrese un valor mayor a 0")
+                espacio()
+                return False
+
+        except ValueError: # este es el error si no puede convertir el string a int
+            print("Por favor ingrese un numero")
+            espacio()
+            return False
+
 # ---------------------------- Funciones Usuario ------------------------------------------
 
 def usuarioRun():
-    #terminar variable para que siga el programa hasta que el usuario haga el "checkout"
-    terminar = False
+    ''' Main function para el usuario
+    ''' 
+
     # Total es variable para calcular el precio final
     total = 0
     ticket = []
 
-    while terminar == False:
+    while True:
 
         usuarioInput = input("Sabe lo que quiere comprar (si/no): ").lower()
         espacio()
@@ -126,6 +150,8 @@ def usuarioRun():
 
             productoComprar = input("Ingrese el nombre del producto: ").lower()
         
+            # Si el usuario no escribe el nombre del producto correctamente, 
+            # le mostramos los disponibles devuelta
             while not productoExiste(dicc, productoComprar):
                 productoComprar = input('Fijese de escribir bien el nombre del producto: ').lower()
 
@@ -138,16 +164,38 @@ def usuarioRun():
                     espacio()
                     errorNombreProducto = 0
                     continue
+            
+            # guardar el stock, asi tengo que llamar a la funcion 1 sola vez
+            stockDelProducto = saberStock(dicc,productoComprar)
 
-            cantidad = int(input("Cuantos quiere comprar?: "))
+            cantidad = input("Cuantos quiere comprar?: ")
+            espacio()
+
+            while not checkCeroNegativo(cantidad):
+                    cantidad = input(f"Por favor ingrese un numero menor o igual a {stockDelProducto}: ")
+
+            # ahora que estoy seguro que ingreso un integer, lo convierto
+            cantidad = int(cantidad)
+            espacio()
                 
             # Si el usuario entra un numero mayor al stock disponible
-            while saberStock(dicc,productoComprar) < cantidad:
+            
+            while stockDelProducto < cantidad:
 
-                print("solo hay", saberStock(dicc,productoComprar))
+                print(f"Solo hay {stockDelProducto} {productoComprar}(s) en stock")
+                espacio()
+                cantidad = input(f"Por favor ingrese un numero menor o igual a {stockDelProducto}: ")
+                espacio()
 
-                cantidad = int(input("por favor ingrese un valor menor o igual: "))
+                # si lo que el usuario pone no es un numero
+                while not checkCeroNegativo(cantidad):
+                    cantidad = input(f"Por favor ingrese un numero menor o igual a {stockDelProducto}: ")        
                 
+                # Necesito transformarlo a int devuelta, por si se equivoco y tuvo que ingresar el valor devuelta
+                cantidad = int(cantidad)    
+                
+                espacio()
+            
 
             # agrego el producto y cantidad al "ticket" para despues sacar stock de cada 1
             # el ticket va a ser una "lista de listas", cada producto y cantidad su propia lista
@@ -184,7 +232,7 @@ def usuarioRun():
             while cancelar != "fin" and cancelar != "cancelar":
                 cancelar = input("Ingrese 'Fin' o 'Cancelar': ").lower()
 
-            terminar == True
+            # Este break termina con el loop de seguir comprando
             break
             
     if cancelar == "fin":
@@ -202,7 +250,7 @@ def usuarioRun():
 # ---------------------------- Funciones Administrador ------------------------------------------
 def agregarStock(dicc, producto, cantidad):
 
-    """ Solo cambia la cantidad de stock del producto seleccionado
+    """ Solo aumenta la cantidad de stock del producto seleccionado
     """
 
     # Abrir para actualizarlo
@@ -210,7 +258,7 @@ def agregarStock(dicc, producto, cantidad):
 
         dicc[producto][2] = dicc[producto][2] + cantidad
 
-        #actualizo el archivo json y lo cierro.
+        #actualizo el archivo json.
         try:
             json.dump(dicc, f)
         except:
@@ -258,7 +306,7 @@ def eliminarProducto(dicc, producto):
     # otra forma seria usando .pop -> dicc.pop(producto) 
         del dicc[producto]
 
-    #actualizo el archivo json y lo cierro.
+    # Actualizo el archivo json.
         try:
             json.dump(dicc, f)
         except:
@@ -267,7 +315,9 @@ def eliminarProducto(dicc, producto):
     #f.close()  -> no es necesario con "with"
 
 def adminRun():
-    
+    ''' Main function para el administrador
+    '''
+
     seguir = True
 
     while seguir:
@@ -282,6 +332,7 @@ def adminRun():
 
         while userInput != "1" and userInput != "2" and userInput != "3" and userInput != "4":
             userInput =  input("Elija 1, 2, 3 o 4: ").lower()
+            espacio()
 
         # Agregar producto nuevo
         if userInput == "1":
@@ -297,15 +348,14 @@ def adminRun():
 
             stockNuevo = input(f"Escriba la cantidad a agregar de {productoNuevo}: ")
 
-            while not stockNuevo.isnumeric():
-                stockNuevo = input(f"La cantidad a agregar debe ser un numero y mayor que 0: ")
-            
+            while not checkCeroNegativo(stockNuevo):
+                stockNuevo = input(f"Escriba la cantidad a agregar de {productoNuevo}: ")
+           
             
             precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
             espacio()
 
-            while not precioNuevo.isnumeric():
-                print("El precio debe ser un numero y mayor que 0!")
+            while not checkCeroNegativo(precioNuevo):       
                 espacio()
                 precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
 
@@ -323,16 +373,14 @@ def adminRun():
             while not productoExiste(dicc, producto): 
                 producto = input(f"{producto} no existe. Ingrese un producto que si este: ").lower()
             
-            stockNuevo = input("Ingrese la cantidad a agregar: ")
+            stockNuevo = input(f"Ingrese la cantidad a agregar de {producto}: ")
 
-            while not stockNuevo.isnumeric():
-                print("El precio debe ser un numero y mayor que 0!")
-                espacio()
-                stockNuevo = input(f"Escriba el precio de {stockNuevo}: $")
+            while not checkCeroNegativo(stockNuevo):
+                stockNuevo = input(f"Ingrese la cantidad a agregar de {producto}: ")
             
             
             agregarStock(dicc, producto, int(stockNuevo))
-            print(f"Ahora hay de {producto} {saberStock(dicc, producto)} en stock")
+            print(f"Ahora hay {saberStock(dicc, producto)} {producto}(s) en stock")
 
         
         # Eliminar Producto
@@ -368,7 +416,8 @@ def adminRun():
                     print(f"{producto} no se eliminara")
                     espacio()
                     break
-                
+
+        # Mostrar Productos        
         elif userInput == "4": # no es necesario poner este elif, con un else bastaria, pero si queremos agregar otra funcion, ya tenemos elif
 
             mostrarProductos(dicc)
@@ -393,7 +442,7 @@ def adminRun():
 
 print("Bienvenido")
 espacio()
-userInput = input("Es un usuario o un Administrador? (user/admin): ").lower()
+userInput = input("Es un Usuario o un Administrador? (user/admin): ").lower()
 espacio()
 
 # Checkear que solo ingrese User / Admin
@@ -404,3 +453,4 @@ if userInput == "user":
     usuarioRun()
 else:
     adminRun()
+
