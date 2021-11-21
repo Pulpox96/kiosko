@@ -343,6 +343,7 @@ def adminRun():
                 print("Ese producto ya existe, escriba uno que no este")
                 espacio()
                 productoNuevo = input("Escriba el nombre del producto: ").lower()
+                espacio()
         
 
             stockNuevo = input(f"Escriba la cantidad a agregar de {productoNuevo}: ")
@@ -350,6 +351,7 @@ def adminRun():
 
             while not checkCeroNegativo(stockNuevo):
                 stockNuevo = input(f"Escriba la cantidad a agregar de {productoNuevo}: ")
+                espacio()
            
             
             precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
