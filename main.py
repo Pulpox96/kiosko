@@ -166,83 +166,100 @@ def usuarioRun():
             # guardar el stock, asi tengo que llamar a la funcion 1 sola vez
             stockDelProducto = saberStock(dicc,productoComprar)
 
-            cantidad = input("Cuantos quiere comprar?: ")
-            espacio()
-
-            while not checkCeroNegativo(cantidad):
-                    cantidad = input(f"Por favor ingrese un numero menor o igual a {stockDelProducto}: ")
-
-            # ahora que estoy seguro que ingreso un integer, lo convierto
-            cantidad = int(cantidad)
-            espacio()
-                
-            # Si el usuario entra un numero mayor al stock disponible
-            
-            while stockDelProducto < cantidad:
-
-                print(f"Solo hay {stockDelProducto} {productoComprar}(s) en stock")
+            if stockDelProducto == 0:
+                print(f"Disculpe, no hay stock disponible de {productoComprar}")
                 espacio()
-                cantidad = input(f"Por favor ingrese un numero menor o igual a {stockDelProducto}: ")
+            else:
+                cantidad = input("Cuantos quiere comprar?: ")
                 espacio()
 
-                # si lo que el usuario pone no es un numero
                 while not checkCeroNegativo(cantidad):
-                    cantidad = input(f"Por favor ingrese un numero menor o igual a {stockDelProducto}: ")        
-                
-                # Necesito transformarlo a int devuelta, por si se equivoco y tuvo que ingresar el valor devuelta
-                cantidad = int(cantidad)    
-                
+                        cantidad = input(f"Por favor ingrese un numero menor o igual a {stockDelProducto}: ")
+
+                # ahora que estoy seguro que ingreso un integer, lo convierto
+                cantidad = int(cantidad)
                 espacio()
-            
+                    
+                # Si el usuario entra un numero mayor al stock disponible
+                
+                while stockDelProducto < cantidad:
 
-            # agrego el producto y cantidad al "ticket" para despues sacar stock de cada 1
-            # el ticket va a ser una "lista de listas", cada producto y cantidad su propia lista
-            ticket.append([productoComprar,cantidad])
+                    print(f"Solo hay {stockDelProducto} {productoComprar}(s) en stock")
+                    espacio()
+                    cantidad = input(f"Por favor ingrese un numero menor o igual a {stockDelProducto}: ")
+                    espacio()
 
-            total = precio(dicc, productoComprar) * cantidad + total
-            
-            print(f"Su total actual es de ${total}") 
+                    # si lo que el usuario pone no es un numero
+                    while not checkCeroNegativo(cantidad):
+                        cantidad = input(f"Por favor ingrese un numero menor o igual a {stockDelProducto}: ")        
+                    
+                    # Necesito transformarlo a int devuelta, por si se equivoco y tuvo que ingresar el valor devuelta
+                    cantidad = int(cantidad)    
+                    
+                    espacio()
+                
+
+                # agrego el producto y cantidad al "ticket" para despues sacar stock de cada 1
+                # el ticket va a ser una "lista de listas", cada producto y cantidad su propia lista
+                ticket.append([productoComprar,cantidad])
+
+                total = precio(dicc, productoComprar) * cantidad + total
+                
+                print(f"Su total actual es de ${total}") 
             
         else: 
             print("escriba si o no")
             continue
 
-        continuarInput = input("Desea seguir comprando? (si/no): ").lower()
+        if total != 0: # Si compro al menos 1 cosa, entra aca
 
-        while continuarInput != "si" and continuarInput  != "no":
-            print("Solo escribir Si o No")
-            espacio()
-            continuarInput = input("Desea seguir comprando? (si/no): ").lower() 
+            continuarInput = input("Desea seguir comprando? (si/no): ").lower()
 
-        if continuarInput == "si":
-            continue
-        elif continuarInput == "no":
-            espacio()
+            while continuarInput != "si" and continuarInput  != "no":
+                print("Solo escribir Si o No")
+                espacio()
+                continuarInput = input("Desea seguir comprando? (si/no): ").lower() 
 
-            print("Su compra final es: ")
+            if continuarInput == "si":
+                continue
+            elif continuarInput == "no":
+                espacio()
+
+                # Solo muestra el ticket y el resto, si compro algo
+                if total != 0:
+
+                    print("Su compra final es: ")
+                    for item in ticket:
+                        print(f"{item[1]} {item[0]}(s)")
+
+                    print(f"Precio final: ${total}")
+                    
+                    cancelar = input("Escriba 'Fin' si esta seguro de la compra o 'Cancelar' para borrar la compra (fin/cancelar): ").lower()
+                    
+                    while cancelar != "fin" and cancelar != "cancelar":
+                        cancelar = input("Ingrese 'Fin' o 'Cancelar': ").lower()
+
+                    # Este break termina con el loop de seguir comprando
+                    break
+        else:
+            break # Si no compro nada, salgo directamente del loop
+
+    # Si compró algo entra al if    
+    if total != 0:
+        if cancelar == "fin":
+            #Loop para sacar stock de cada producto del ticket
             for item in ticket:
-                print(f"{item[1]} {item[0]}(s)")
+                sacarStock(dicc, item[0], item[1])
 
-            print(f"Precio final: ${total}")
-            
-            cancelar = input("Escriba 'Fin' si esta seguro de la compra o 'Cancelar' para borrar la compra (fin/cancelar): ").lower()
-            
-            while cancelar != "fin" and cancelar != "cancelar":
-                cancelar = input("Ingrese 'Fin' o 'Cancelar': ").lower()
+            print(f"Su total es ${total}")
+            print("Gracias por comprar!")
 
-            # Este break termina con el loop de seguir comprando
-            break
-            
-    if cancelar == "fin":
-        #Loop para sacar stock de cada producto del ticket     
-        for item in ticket:
-            sacarStock(dicc, item[0], item[1])
-
-        print(f"Su total es ${total}")
-        print("Gracias por comprar!")
-
+        else:
+            print("Se cancelo la compra.")
+    
+    #si no compró nada
     else:
-        print("Se cancelo la compra.")
+        print("Vuelva Pronto")
 
 
 # ---------------------------- Funciones Administrador ------------------------------------------
@@ -437,12 +454,38 @@ def adminRun():
             print("Gracias por usar este programa!")
             break # este break termina el programa
 
-def checkPassword(num):
+def validarAdmin():
+    ''' Checkea que el administrador sepa la contraseña, y le da acceso si la sabe
+        Devuelve True si ingresa bien la contraseña, False en caso contrario
+    '''
+    
     password = "123"
 
-    if num == password:
-        return True
-    return False
+    num = input("Ingrese contraseña: ").lower()
+    espacio()
+
+    try:
+        if num == password:
+            return True
+        else:
+            counter = 3
+            espacio()
+
+            while not num == password:
+                
+                print(f"Contraseña incorrecta, tiene {counter} intento(s) restantes")
+                espacio()
+                num = input("Ingrese contraseña: ").lower()
+                espacio()
+                counter -= 1
+                
+                if num == password:
+                    return True
+                if counter == 0:
+                    return False
+    except:
+        print("Algo salio mal en validarAdmin()")
+
 
 #----------------------------- Programa Principal ----------------------------------------
 
@@ -459,26 +502,8 @@ while userInput != "user" and  userInput != "admin":
 if userInput == "user":
     usuarioRun()
 else:
-    counter = 3
-    password = input("Ingrese contraseña: ").lower()
-    espacio()
-
-    while not checkPassword(password):
-        
-        print(f"Contraseña incorrecta, tiene {counter} intento(s) restantes")
-        espacio()
-        password = input("Ingrese contraseña: ").lower()
-        espacio()
-        counter -= 1
-        
-        if counter == 0:
-            break
-
-    # Si pudo ingresar la contraseña        
-    if counter != 0:        
+    # Fijarse si sabe la contraseña
+    if validarAdmin():
         adminRun()
-
-    # Si no pudo ingresar la contraseña
     else:
         print("No ingreso la contraseña correcta, se cerrara el programa")
-
