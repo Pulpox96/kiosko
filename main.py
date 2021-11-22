@@ -437,6 +437,12 @@ def adminRun():
             print("Gracias por usar este programa!")
             break # este break termina el programa
 
+def checkPassword(num):
+    password = "123"
+
+    if num == password:
+        return True
+    return False
 
 #----------------------------- Programa Principal ----------------------------------------
 
@@ -453,5 +459,26 @@ while userInput != "user" and  userInput != "admin":
 if userInput == "user":
     usuarioRun()
 else:
-    adminRun()
+    counter = 3
+    password = input("Ingrese contraseña: ").lower()
+    espacio()
+
+    while not checkPassword(password):
+        
+        print(f"Contraseña incorrecta, tiene {counter} intento(s) restantes")
+        espacio()
+        password = input("Ingrese contraseña: ").lower()
+        espacio()
+        counter -= 1
+        
+        if counter == 0:
+            break
+
+    # Si pudo ingresar la contraseña        
+    if counter != 0:        
+        adminRun()
+
+    # Si no pudo ingresar la contraseña
+    else:
+        print("No ingreso la contraseña correcta, se cerrara el programa")
 
