@@ -1,19 +1,3 @@
-"""
-productos = {
-        "caramelo" : [1, 5, 100],
-        "alfajor": [2, 15, 20],
-        "vino": [3, 200, 10],
-	    "agua": [7, 100, 60],
-	    "mayonesa": [8, 55, 35],
-	    "yogurt": [9, 25, 50],
-        "harina" : [4, 70, 100],
-        "jabon": [5, 15, 20],
-        "lavandina": [6, 120, 40],
-        "detergente": [10, 100, 20],
-	    "fosforos": [11, 50, 50],
-	    "vela": [12, 10, 50] 
-}
-"""
 # Import json para leer el archivo
 import json
 
@@ -65,7 +49,7 @@ def mostrarProductos(dicc):
 
 def sacarStock(dicc, producto, cantidad):
     
-    """ Saca Stock del producto seleccionado
+    """ Saca Stock del producto seleccionado. El 'stock' esta en el 3er lugar de la lista
     """  
    
     # Abrir para actualizarlo
@@ -122,7 +106,7 @@ def checkCeroNegativo(num):
 # ---------------------------- Funciones Usuario ------------------------------------------
 
 def usuarioRun():
-    ''' Main function para el usuario. Pregunta que producto, cuanto, y calcula el final.
+    ''' Function principal para el usuario. Pregunta que producto, cuanto, y calcula el final.
         Usa todas las funciones definidas anteriormente.
     ''' 
 
@@ -130,6 +114,7 @@ def usuarioRun():
     total = 0
     ticket = []
 
+    # loop principal para permitir la compra de varios productos
     while True:
 
         usuarioInput = input("Sabe lo que quiere comprar (si/no): ").lower()
@@ -166,13 +151,17 @@ def usuarioRun():
             # guardar el stock, asi tengo que llamar a la funcion 1 sola vez
             stockDelProducto = saberStock(dicc,productoComprar)
 
+            # Si no hay stock
             if stockDelProducto == 0:
                 print(f"Disculpe, no hay stock disponible de {productoComprar}")
                 espacio()
+
+            # Si hay stock
             else:
                 cantidad = input("Cuantos quiere comprar?: ")
                 espacio()
 
+                # Checkeo que haya ingresado un int y que sea mayor que 0
                 while not checkCeroNegativo(cantidad):
                         cantidad = input(f"Por favor ingrese un numero menor o igual a {stockDelProducto}: ")
 
@@ -208,7 +197,7 @@ def usuarioRun():
                 print(f"Su total actual es de ${total}") 
             
         
-        # Si se equivoca en escribir si o no
+        # Si se equivoca en escribir si o no (Sabe lo que quiere comprar (si/no): )
         else: 
             print("Escriba si o no")
             continue
@@ -234,8 +223,11 @@ def usuarioRun():
                     for item in ticket:
                         print(f"{item[1]} {item[0]}(s)")
 
+                    espacio()
+
                     print(f"Precio final: ${total}")
-                    
+                    espacio()
+
                     cancelar = input("Escriba 'Fin' si esta seguro de la compra o 'Cancelar' para borrar la compra (fin/cancelar): ").lower()
                     
                     while cancelar != "fin" and cancelar != "cancelar":
@@ -244,7 +236,7 @@ def usuarioRun():
                     # Este break termina con el loop de seguir comprando
                     break
         else:
-            break # Si no compro nada, salgo directamente del loop
+            break # Si no compro nada, salgo directamente del loop principal.
 
     # Si compró algo entra al if    
     if total != 0:
@@ -266,7 +258,6 @@ def usuarioRun():
 
 # ---------------------------- Funciones Administrador ------------------------------------------
 def agregarStock(dicc, producto, cantidad):
-
     """ Solo aumenta la cantidad de stock del producto seleccionado
     """
 
@@ -279,7 +270,7 @@ def agregarStock(dicc, producto, cantidad):
         try:
             json.dump(dicc, f)
         except:
-            print("No se pudo actualizar el archivo")
+            print("No se pudo actualizar el archivo. Error en agregarStock()")
 
 def agregarProducto(dicc, producto, precio, cantidad):
     
@@ -289,10 +280,11 @@ def agregarProducto(dicc, producto, precio, cantidad):
     y sumarle 1.
     '''
 
-    # Si el archivo tuviera miles de productos, probablemente hacer una lista de todos, llevaria tiempo y habria
+    # Si el archivo tuviera miles de productos, probablemente hacer una lista de todos llevaria tiempo y habria
     # que buscar una forma mejor.
 
-    # para agarrar el ultimo elemento del diccionario hacer una lista de todo el diccionario -> list(dicc)[-1]
+    # para agarrar el ultimo elemento del diccionario hacer una lista de todo el diccionario
+    # y agarrar el ultimo -> list(dicc)[-1]
     ultimoProducto = list(dicc)[-1]
 
     ultimoId = dicc[ultimoProducto][0] + 1 # necesitamos que sea un nuevo id, por eso agrego el +1
@@ -311,7 +303,7 @@ def agregarProducto(dicc, producto, precio, cantidad):
 
 def eliminarProducto(dicc, producto):
    
-    """ borra el key-value completamente del archivo
+    """ Borra el key-value completamente del archivo
     """
     
     # Abrir para actualizarlo
@@ -344,6 +336,7 @@ def validarAdmin():
         if num == password:
             return True
         else:
+            # Counter = la cantidad de intentos de ingresar la contraseña
             counter = 3
             espacio()
 
@@ -365,10 +358,11 @@ def validarAdmin():
 
 
 def adminRun():
-    ''' Main function para el administrador. Pregunta que quiere hacer,
+    ''' Function principal para el administrador. Pregunta que quiere hacer,
         Y usa las funciones definidas anteriormente
     '''
 
+    # Loop principal para permitir seguir usando el programa, despues de terminar.
     while True:
         print("(1) Agregar producto nuevo")
         print("(2) Agregar Stock")
@@ -400,6 +394,7 @@ def adminRun():
             stockNuevo = input(f"Escriba la cantidad a agregar de {productoNuevo}: ")
             espacio()
 
+            # Checkeo que sea int, mayor que 0 y un numero positivo
             while not checkCeroNegativo(stockNuevo):
                 stockNuevo = input(f"Escriba la cantidad a agregar de {productoNuevo}: ")
                 espacio()
@@ -408,6 +403,7 @@ def adminRun():
             precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
             espacio()
 
+            # Checkeo que sea int, mayor que 0 y un numero positivo
             while not checkCeroNegativo(precioNuevo):       
                 espacio()
                 precioNuevo = input(f"Escriba el precio de {productoNuevo}: $")
@@ -424,11 +420,13 @@ def adminRun():
 
             producto = input("Ingrese el producto a agregar stock: ").lower()
 
+            # Checkeo que exista el producto
             while not productoExiste(dicc, producto): 
                 producto = input(f"{producto} no existe. Ingrese un producto que si este: ").lower()
             
             stockNuevo = input(f"Ingrese la cantidad a agregar de {producto}: ")
-
+            
+            # Checkeo que sea int, mayor que 0 y un numero positivo
             while not checkCeroNegativo(stockNuevo):
                 stockNuevo = input(f"Ingrese la cantidad a agregar de {producto}: ")
             
